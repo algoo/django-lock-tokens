@@ -24,8 +24,9 @@ class LockTokenBaseView(View):
         try:
             return ContentType.objects.get(app_label=app_label, model=model)
         except ContentType.DoesNotExist:
-            raise Http404("There is no model named %s with app_label %s" % (model,
-                                                                            app_label))
+            raise Http404(
+                "There is no model named %s with app_label %s" % (model, app_label)
+            )
 
     def get_object_or_404(self, app_label, model, object_id):
         contenttype = self.get_contenttype_or_404(app_label, model)
@@ -34,12 +35,14 @@ class LockTokenBaseView(View):
         except contenttype.model_class().DoesNotExist:
             raise Http404("The object with id %s does not exist" % object_id)
 
-    def get_valid_lock_token_or_error(self, app_label, model, object_id, token, allow_expired=True):
+    def get_valid_lock_token_or_error(
+        self, app_label, model, object_id, token, allow_expired=True
+    ):
         contenttype = self.get_contenttype_or_404(app_label, model)
         try:
-            lock_token = LockToken.objects.get_for_contenttype_and_id(contenttype,
-                                                                      object_id,
-                                                                      allow_expired)
+            lock_token = LockToken.objects.get_for_contenttype_and_id(
+                contenttype, object_id, allow_expired
+            )
         except LockToken.DoesNotExist:
             raise Http404("No valid token for this resource.")
         if not token == lock_token.token_str:
@@ -54,26 +57,30 @@ class LockTokenListView(LockTokenBaseView):
         try:
             lock_token = LockToken.objects.create(locked_object=obj)
         except AlreadyLockedError:
-            return JsonResponse({}, status=409, reason="This resource is "
-                                "already locked")
+            return JsonResponse(
+                {}, status=409, reason="This resource is " "already locked"
+            )
         return JsonResponse(lock_token.serialize(), status=201)
 
 
 class LockTokenDetailView(LockTokenBaseView):
 
     def get(self, request, app_label, model, object_id, token):
-        lock_token = self.get_valid_lock_token_or_error(app_label, model, object_id,
-                                                        token)
+        lock_token = self.get_valid_lock_token_or_error(
+            app_label, model, object_id, token
+        )
         return JsonResponse(lock_token.serialize())
 
     def patch(self, request, app_label, model, object_id, token):
-        lock_token = self.get_valid_lock_token_or_error(app_label, model, object_id,
-                                                        token)
+        lock_token = self.get_valid_lock_token_or_error(
+            app_label, model, object_id, token
+        )
         lock_token.renew()
         return JsonResponse(lock_token.serialize())
 
     def delete(self, request, app_label, model, object_id, token):
-        lock_token = self.get_valid_lock_token_or_error(app_label, model, object_id,
-                                                        token)
+        lock_token = self.get_valid_lock_token_or_error(
+            app_label, model, object_id, token
+        )
         lock_token.delete()
         return JsonResponse({}, status=204)

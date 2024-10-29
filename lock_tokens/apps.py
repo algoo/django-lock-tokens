@@ -3,4 +3,4 @@ from django.apps import AppConfig
 
 
 class LockTokensConfig(AppConfig):
-    name = 'lock_tokens'
+    name = "lock_tokens"

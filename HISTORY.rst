@@ -3,6 +3,13 @@
 History
 -------
 
+0.3.0 (2024-10-29)
+
+- Port the code to Python 3.12 and Django 5.1
+- Remove old Python and Django versions
+- Move the repo to https://github.com/algoo/django-lock-tockens
+- Add black to development environment
+
 0.2.5 (2019-02-07)
 ^^^^^^^^^^^^^^^^^^
 
