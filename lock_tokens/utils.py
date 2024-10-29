@@ -27,7 +27,7 @@ class _LoopThread(threading.Thread):
         def renew(myself):
             try:
                 myself.lock_token.renew()
-            except:
+            except Exception:
                 myself.stop.set()
 
         renew(self)

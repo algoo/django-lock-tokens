@@ -12,11 +12,11 @@ class LockTokenManager(Manager):
 
     def get_for_contenttype_and_id(self, contenttype, object_id, allow_expired=True):
         lookup_fields = {
-            'locked_object_content_type': contenttype,
-            'locked_object_id': object_id
+            "locked_object_content_type": contenttype,
+            "locked_object_id": object_id,
         }
         if not allow_expired:
-            lookup_fields['locked_at__gte'] = get_oldest_valid_tokens_datetime()
+            lookup_fields["locked_at__gte"] = get_oldest_valid_tokens_datetime()
         return self.get(**lookup_fields)
 
     def get_or_create_for_object(self, obj):
@@ -30,6 +30,7 @@ class LockableModelManager(Manager):
 
     def get_and_lock(self, *args, **kwargs):
         from lock_tokens.models import LockToken
+
         obj = super(LockableModelManager, self).get(*args, **kwargs)
         lock_token = LockToken.objects.create(obj)
         return obj, lock_token.serialize()

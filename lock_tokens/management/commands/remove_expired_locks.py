@@ -12,4 +12,5 @@ class Command(BaseCommand):
         n = expired_tokens.count()
         expired_tokens.delete()
         self.stdout.write(
-            self.style.SUCCESS('Successfully removed %s expired tokens' % n))
+            self.style.SUCCESS("Successfully removed %s expired tokens" % n)
+        )

@@ -7,6 +7,7 @@ from tests.models import RegularModel
 
 
 class RegularModelAdmin(LockableModelAdmin):
-  pass
+    pass
+
 
 admin.site.register(RegularModel, RegularModelAdmin)
